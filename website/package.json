@@ -20,7 +20,7 @@
     "@hashicorp/react-content": "8.0.1",
     "@hashicorp/react-docs-page": "14.0.1",
     "@hashicorp/react-featured-slider": "^4.1.2",
-    "@hashicorp/react-hashi-stack-menu": "^2.0.6",
+    "@hashicorp/react-hashi-stack-menu": "^2.0.7",
     "@hashicorp/react-head": "^3.1.1",
     "@hashicorp/react-hero": "7.3.3",
     "@hashicorp/react-image": "^4.0.2",
