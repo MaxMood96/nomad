@@ -133,7 +133,7 @@
     "@babel/plugin-transform-member-expression-literals": "^7.2.0",
     "@storybook/addon-knobs": "^5.2.5",
     "@storybook/addon-storysource": "^5.2.5",
-    "@storybook/addon-viewport": "^5.2.5",
+    "@storybook/addon-viewport": "^6.3.10",
     "@storybook/addons": "^5.2.5",
     "@storybook/ember": "^5.2.5",
     "babel-loader": "^8.0.6",
