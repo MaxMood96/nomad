@@ -38,15 +38,15 @@ require (
 	github.com/fsouza/go-dockerclient v1.6.5
 	github.com/golang/protobuf v1.5.2
 	github.com/golang/snappy v0.0.4
-	github.com/google/go-cmp v0.5.6
+	github.com/google/go-cmp v0.5.7
 	github.com/gorilla/handlers v1.5.1
-	github.com/gorilla/websocket v1.4.2
+	github.com/gorilla/websocket v1.5.0
 	github.com/gosuri/uilive v0.0.4
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.1-0.20200228141219-3ce3d519df39
 	github.com/hashicorp/consul v1.7.8
-	github.com/hashicorp/consul-template v0.25.2
-	github.com/hashicorp/consul/api v1.9.1
-	github.com/hashicorp/consul/sdk v0.8.0
+	github.com/hashicorp/consul-template v0.29.4
+	github.com/hashicorp/consul/api v1.15.2
+	github.com/hashicorp/consul/sdk v0.11.0
 	github.com/hashicorp/cronexpr v1.1.1
 	github.com/hashicorp/go-checkpoint v0.0.0-20171009173528-1545e56e46de
 	github.com/hashicorp/go-cleanhttp v0.5.2
@@ -58,8 +58,8 @@ require (
 	github.com/hashicorp/go-discover v0.0.0-20210818145131-c573d69da192
 	github.com/hashicorp/go-envparse v0.0.0-20180119215841-310ca1881b22
 	github.com/hashicorp/go-getter v1.5.11
-	github.com/hashicorp/go-hclog v1.1.0
-	github.com/hashicorp/go-immutable-radix v1.3.0
+	github.com/hashicorp/go-hclog v1.3.1
+	github.com/hashicorp/go-immutable-radix v1.3.1
 	github.com/hashicorp/go-memdb v1.3.2
 	github.com/hashicorp/go-msgpack v1.1.5
 	github.com/hashicorp/go-multierror v1.1.1
@@ -72,28 +72,28 @@ require (
 	github.com/hashicorp/hcl v1.0.1-0.20201016140508-a07e7d50bbee
 	github.com/hashicorp/hcl/v2 v2.9.2-0.20210407182552-eb14f8319bdc
 	github.com/hashicorp/logutils v1.0.0
-	github.com/hashicorp/memberlist v0.2.2
+	github.com/hashicorp/memberlist v0.3.1
 	github.com/hashicorp/net-rpc-msgpackrpc v0.0.0-20151116020338-a14192a58a69
-	github.com/hashicorp/nomad/api v0.0.0-20200529203653-c4416b26d3eb
+	github.com/hashicorp/nomad/api v0.0.0-20220707195938-75f4c2237b28
 	github.com/hashicorp/raft v1.1.3-0.20200211192230-365023de17e6
 	github.com/hashicorp/raft-boltdb v0.0.0-20171010151810-6e5ba93211ea
-	github.com/hashicorp/serf v0.9.5
-	github.com/hashicorp/vault/api v1.0.5-0.20200805123347-1ef507638af6
-	github.com/hashicorp/vault/sdk v0.2.0
+	github.com/hashicorp/serf v0.9.7
+	github.com/hashicorp/vault/api v1.8.0
+	github.com/hashicorp/vault/sdk v0.6.0
 	github.com/hashicorp/yamux v0.0.0-20181012175058-2f1d1f20f75d
 	github.com/hpcloud/tail v1.0.1-0.20170814160653-37f427138745
 	github.com/kr/pretty v0.3.0
 	github.com/kr/text v0.2.0
-	github.com/mattn/go-colorable v0.1.9
-	github.com/miekg/dns v1.1.26
+	github.com/mattn/go-colorable v0.1.12
+	github.com/miekg/dns v1.1.41
 	github.com/mitchellh/cli v1.1.0
 	github.com/mitchellh/colorstring v0.0.0-20150917214807-8631ce90f286
 	github.com/mitchellh/copystructure v1.1.1
 	github.com/mitchellh/go-glint v0.0.0-20210722152315-6515ceb4a127
 	github.com/mitchellh/go-ps v0.0.0-20190716172923-621e5597135b
 	github.com/mitchellh/go-testing-interface v1.14.1
-	github.com/mitchellh/hashstructure v1.0.0
-	github.com/mitchellh/mapstructure v1.4.2
+	github.com/mitchellh/hashstructure v1.1.0
+	github.com/mitchellh/mapstructure v1.5.0
 	github.com/mitchellh/reflectwalk v1.0.1
 	github.com/moby/sys/mount v0.3.0
 	github.com/moby/sys/mountinfo v0.5.0
@@ -109,15 +109,15 @@ require (
 	github.com/sean-/seed v0.0.0-20170313163322-e2103e2c3529
 	github.com/shirou/gopsutil/v3 v3.21.6-0.20210619153009-7ea8062810b6
 	github.com/skratchdot/open-golang v0.0.0-20160302144031-75fb7ed4208c
-	github.com/stretchr/testify v1.7.0
+	github.com/stretchr/testify v1.8.0
 	github.com/syndtr/gocapability v0.0.0-20200815063812-42c35b437635
 	github.com/zclconf/go-cty v1.8.0
 	github.com/zclconf/go-cty-yaml v1.0.2
 	go.uber.org/goleak v1.1.12
-	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
-	golang.org/x/net v0.0.0-20211216030914-fe4d6282115f
+	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d
+	golang.org/x/net v0.0.0-20220906165146-f3363e06e74c
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
-	golang.org/x/sys v0.0.0-20211109065445-02f5c0300f6e
+	golang.org/x/sys v0.0.0-20220728004956-3c1f35247d10
 	golang.org/x/time v0.0.0-20200630173020-3af7569d3a1e
 	google.golang.org/grpc v1.42.0
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7
@@ -139,8 +139,11 @@ require (
 	github.com/Azure/go-autorest/autorest/validation v0.3.0 // indirect
 	github.com/Azure/go-autorest/logger v0.2.1 // indirect
 	github.com/Azure/go-autorest/tracing v0.6.0 // indirect
-	github.com/BurntSushi/toml v0.4.1 // indirect
+	github.com/BurntSushi/toml v1.2.0 // indirect
 	github.com/DataDog/datadog-go v3.2.0+incompatible // indirect
+	github.com/Masterminds/goutils v1.1.1 // indirect
+	github.com/Masterminds/semver v1.5.0 // indirect
+	github.com/Masterminds/sprig v2.22.0+incompatible // indirect
 	github.com/Microsoft/hcsshim v0.8.23 // indirect
 	github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d // indirect
 	github.com/VividCortex/ewma v1.1.1 // indirect
@@ -153,6 +156,7 @@ require (
 	github.com/bgentry/speakeasy v0.1.0 // indirect
 	github.com/bits-and-blooms/bitset v1.2.0 // indirect
 	github.com/bmatcuk/doublestar v1.1.5 // indirect
+	github.com/cenkalti/backoff/v3 v3.0.0 // indirect
 	github.com/census-instrumentation/opencensus-proto v0.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/checkpoint-restore/go-criu/v5 v5.0.0 // indirect
@@ -194,8 +198,14 @@ require (
 	github.com/hashicorp/go-retryablehttp v0.6.7 // indirect
 	github.com/hashicorp/go-rootcerts v1.0.2 // indirect
 	github.com/hashicorp/go-safetemp v1.0.0 // indirect
-	github.com/hashicorp/mdns v1.0.1 // indirect
+	github.com/hashicorp/go-secure-stdlib/mlock v0.1.1 // indirect
+	github.com/hashicorp/go-secure-stdlib/parseutil v0.1.6 // indirect
+	github.com/hashicorp/go-secure-stdlib/strutil v0.1.2 // indirect
+	github.com/hashicorp/mdns v1.0.4 // indirect
+	github.com/hashicorp/vault/api/auth/kubernetes v0.3.0 // indirect
 	github.com/hashicorp/vic v1.5.1-0.20190403131502-bbfe86ec9443 // indirect
+	github.com/huandu/xstrings v1.2.0 // indirect
+	github.com/imdario/mergo v0.3.13 // indirect
 	github.com/ishidawataru/sctp v0.0.0-20191218070446-00ab2ac2db07 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/joyent/triton-go v0.0.0-20190112182421-51ffac552869 // indirect
@@ -203,7 +213,6 @@ require (
 	github.com/linode/linodego v0.7.1 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/mattn/go-runewidth v0.0.7 // indirect
-	github.com/mattn/go-shellwords v1.0.10 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.2-0.20181231171920-c182affec369 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/go-wordwrap v1.0.1 // indirect
@@ -226,7 +235,7 @@ require (
 	github.com/seccomp/libseccomp-golang v0.9.2-0.20200314001724-bdab42bd5128 // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
 	github.com/softlayer/softlayer-go v0.0.0-20180806151055-260589d94c7d // indirect
-	github.com/stretchr/objx v0.2.0 // indirect
+	github.com/stretchr/objx v0.4.0 // indirect
 	github.com/tencentcloud/tencentcloud-sdk-go v1.0.162 // indirect
 	github.com/tj/go-spin v1.1.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.6 // indirect
@@ -239,8 +248,9 @@ require (
 	github.com/vmihailenco/tagparser v0.1.1 // indirect
 	github.com/vmware/govmomi v0.18.0 // indirect
 	go.opencensus.io v0.23.0 // indirect
+	go.uber.org/atomic v1.9.0 // indirect
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8 // indirect
-	golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1 // indirect
+	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/tools v0.1.8-0.20211029000441-d6a9af8af023 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
@@ -253,5 +263,5 @@ require (
 	gopkg.in/resty.v1 v1.12.0 // indirect
 	gopkg.in/square/go-jose.v2 v2.5.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
