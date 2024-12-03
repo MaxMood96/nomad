@@ -27,7 +27,7 @@ require (
 	github.com/creack/pty v1.1.24
 	github.com/distribution/reference v0.5.0
 	github.com/docker/cli v27.3.1+incompatible
-	github.com/docker/docker v27.1.1+incompatible
+	github.com/docker/docker v27.3.1+incompatible
 	github.com/docker/go-connections v0.4.0
 	github.com/docker/go-units v0.5.0
 	github.com/dustin/go-humanize v1.0.1
@@ -70,7 +70,7 @@ require (
 	github.com/hashicorp/go-secure-stdlib/listenerutil v0.1.9
 	github.com/hashicorp/go-secure-stdlib/strutil v0.1.2
 	github.com/hashicorp/go-set/v3 v3.0.0
-	github.com/hashicorp/go-sockaddr v1.0.6
+	github.com/hashicorp/go-sockaddr v1.0.7
 	github.com/hashicorp/go-syslog v1.0.0
 	github.com/hashicorp/go-uuid v1.0.3
 	github.com/hashicorp/go-version v1.7.0
@@ -86,7 +86,7 @@ require (
 	github.com/hashicorp/raft-autopilot v0.1.6
 	github.com/hashicorp/raft-boltdb/v2 v2.3.0
 	github.com/hashicorp/serf v0.10.2-0.20240320153621-5d32001edfaa
-	github.com/hashicorp/vault/api v1.10.0
+	github.com/hashicorp/vault/api v1.15.0
 	github.com/hashicorp/yamux v0.1.2
 	github.com/hpcloud/tail v1.0.1-0.20170814160653-37f427138745
 	github.com/klauspost/cpuid/v2 v2.2.8
@@ -125,7 +125,7 @@ require (
 	github.com/shoenig/test v1.11.0
 	github.com/stretchr/testify v1.10.0
 	github.com/zclconf/go-cty v1.13.0
-	github.com/zclconf/go-cty-yaml v1.0.3
+	github.com/zclconf/go-cty-yaml v1.1.0
 	go.etcd.io/bbolt v1.3.9
 	go.uber.org/goleak v1.2.1
 	golang.org/x/crypto v0.27.0
@@ -180,7 +180,7 @@ require (
 	github.com/bgentry/speakeasy v0.1.0 // indirect
 	github.com/bmatcuk/doublestar v1.1.5 // indirect
 	github.com/boltdb/bolt v1.3.1 // indirect
-	github.com/cenkalti/backoff/v3 v3.2.2 // indirect
+	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/checkpoint-restore/go-criu/v5 v5.3.0 // indirect
 	github.com/cheggaaa/pb/v3 v3.0.5 // indirect
