@@ -34,6 +34,7 @@ import (
 	"github.com/hashicorp/nomad/client/dynamicplugins"
 	"github.com/hashicorp/nomad/client/fingerprint"
 	"github.com/hashicorp/nomad/client/hoststats"
+	hvm "github.com/hashicorp/nomad/client/hostvolumemanager"
 	cinterfaces "github.com/hashicorp/nomad/client/interfaces"
 	"github.com/hashicorp/nomad/client/lib/cgroupslib"
 	"github.com/hashicorp/nomad/client/lib/numalib"
@@ -289,6 +290,8 @@ type Client struct {
 	// drivermanager is responsible for managing driver plugins
 	drivermanager drivermanager.Manager
 
+	hostVolumeManager *hvm.HostVolumeManager
+
 	// baseLabels are used when emitting tagged metrics. All client metrics will
 	// have these tags, and optionally more.
 	baseLabels []metrics.Label
@@ -408,6 +411,7 @@ func NewClient(cfg *config.Config, consulCatalog consul.CatalogAPI, consulProxie
 		c.updateNodeFromDriver,
 		c.updateNodeFromDevices,
 		c.updateNodeFromCSI,
+		c.updateNodeFromHostVol,
 	)
 
 	// Initialize the server manager
@@ -532,6 +536,15 @@ func NewClient(cfg *config.Config, consulCatalog consul.CatalogAPI, consulProxie
 	c.devicemanager = devManager
 	c.pluginManagers.RegisterAndRun(devManager)
 
+	// set up dynamic host volume manager
+	c.hostVolumeManager = hvm.NewHostVolumeManager(logger, hvm.Config{
+		PluginDir:      cfg.HostVolumePluginDir,
+		SharedMountDir: cfg.AllocMountsDir,
+		StateMgr:       c.stateDB,
+		UpdateNodeVols: c.batchNodeUpdates.updateNodeFromHostVolume,
+	})
+	c.pluginManagers.RegisterAndRun(c.hostVolumeManager)
+
 	// Set up the service registration wrapper using the Consul and Nomad
 	// implementations. The Nomad implementation is only ever used on the
 	// client, so we do that here rather than within the agent.
@@ -620,6 +633,10 @@ func NewClient(cfg *config.Config, consulCatalog consul.CatalogAPI, consulProxie
 
 	// Begin syncing allocations to the server
 	c.shutdownGroup.Go(c.allocSync)
+
+	// Ensure our base labels are generated and stored before we start the
+	// client and begin emitting stats.
+	c.setupStatsLabels()
 
 	// Start the client! Don't use the shutdownGroup as run handles
 	// shutdowns manually to prevent updates from being applied during
@@ -2783,6 +2800,7 @@ func (c *Client) newAllocRunnerConfig(
 ) *config.AllocRunnerConfig {
 	return &config.AllocRunnerConfig{
 		Alloc:               alloc,
+		BaseLabels:          c.baseLabels,
 		CSIManager:          c.csimanager,
 		CheckStore:          c.checkStore,
 		ClientConfig:        c.GetConfig(),
@@ -3183,22 +3201,33 @@ DISCOLOOP:
 	return nil
 }
 
-// emitStats collects host resource usage stats periodically
-func (c *Client) emitStats() {
-	// Determining NodeClass to be emitted
+// setupStatsLabels builds the base labels for the client. This should be done
+// before Client.run() is called, so that sub-system can use these without fear
+// they have not been set.
+func (c *Client) setupStatsLabels() {
+
+	// Determine the node class label value to emit, so we do not emit an empty
+	// string if this parameter has not been set by operators.
 	var emittedNodeClass string
 	if emittedNodeClass = c.Node().NodeClass; emittedNodeClass == "" {
 		emittedNodeClass = "none"
 	}
 
-	// Assign labels directly before emitting stats so the information expected
-	// is ready
+	// Store the base labels, so client and allocrunner subsystem can access
+	// and use these.
+	//
+	// The four labels provide enough useful information for operators in both
+	// single and multi-tenant clusters while not exploding the cardinality.
 	c.baseLabels = []metrics.Label{
 		{Name: "node_id", Value: c.NodeID()},
 		{Name: "datacenter", Value: c.Datacenter()},
 		{Name: "node_class", Value: emittedNodeClass},
 		{Name: "node_pool", Value: c.Node().NodePool},
 	}
+}
+
+// emitStats collects host resource usage stats periodically
+func (c *Client) emitStats() {
 
 	// Start collecting host stats right away and then keep collecting every
 	// collection interval
