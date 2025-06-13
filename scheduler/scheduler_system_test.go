@@ -16,13 +16,16 @@ import (
 	"github.com/hashicorp/nomad/helper/uuid"
 	"github.com/hashicorp/nomad/nomad/mock"
 	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/hashicorp/nomad/scheduler/feasible"
+	"github.com/hashicorp/nomad/scheduler/reconciler"
+	"github.com/hashicorp/nomad/scheduler/tests"
 	"github.com/shoenig/test/must"
 )
 
 func TestSystemSched_JobRegister(t *testing.T) {
 	ci.Parallel(t)
 
-	h := NewHarness(t)
+	h := tests.NewHarness(t)
 
 	// Create some nodes
 	_ = createNodes(t, h, 10)
@@ -95,7 +98,7 @@ func TestSystemSched_JobRegister(t *testing.T) {
 func TestSystemSched_JobRegister_StickyAllocs(t *testing.T) {
 	ci.Parallel(t)
 
-	h := NewHarness(t)
+	h := tests.NewHarness(t)
 
 	// Create some nodes
 	_ = createNodes(t, h, 10)
@@ -146,7 +149,7 @@ func TestSystemSched_JobRegister_StickyAllocs(t *testing.T) {
 		Status:      structs.EvalStatusPending,
 	}
 	must.NoError(t, h.State.UpsertEvals(structs.MsgTypeTestSetup, h.NextIndex(), []*structs.Evaluation{eval}))
-	h1 := NewHarnessWithState(t, h.State)
+	h1 := tests.NewHarnessWithState(t, h.State)
 	if err := h1.Process(NewSystemScheduler, eval); err != nil {
 		t.Fatalf("err: %v", err)
 	}
@@ -170,7 +173,7 @@ func TestSystemSched_JobRegister_StickyAllocs(t *testing.T) {
 func TestSystemSched_JobRegister_EphemeralDiskConstraint(t *testing.T) {
 	ci.Parallel(t)
 
-	h := NewHarness(t)
+	h := tests.NewHarness(t)
 
 	// Create a node
 	node := mock.Node()
@@ -214,7 +217,7 @@ func TestSystemSched_JobRegister_EphemeralDiskConstraint(t *testing.T) {
 	}
 
 	// Create a new harness to test the scheduling result for the second job
-	h1 := NewHarnessWithState(t, h.State)
+	h1 := tests.NewHarnessWithState(t, h.State)
 	// Create a mock evaluation to register the job
 	eval1 := &structs.Evaluation{
 		Namespace:   structs.DefaultNamespace,
@@ -241,7 +244,7 @@ func TestSystemSched_JobRegister_EphemeralDiskConstraint(t *testing.T) {
 func TestSystemSched_ExhaustResources(t *testing.T) {
 	ci.Parallel(t)
 
-	h := NewHarness(t)
+	h := tests.NewHarness(t)
 
 	// Create a node
 	node := mock.Node()
@@ -319,7 +322,7 @@ func TestSystemSched_ExhaustResources(t *testing.T) {
 func TestSystemSched_JobRegister_Annotate(t *testing.T) {
 	ci.Parallel(t)
 
-	h := NewHarness(t)
+	h := tests.NewHarness(t)
 
 	// Create some nodes
 	for i := 0; i < 10; i++ {
@@ -418,7 +421,7 @@ func TestSystemSched_JobRegister_Annotate(t *testing.T) {
 func TestSystemSched_JobRegister_AddNode(t *testing.T) {
 	ci.Parallel(t)
 
-	h := NewHarness(t)
+	h := tests.NewHarness(t)
 
 	// Create some nodes
 	nodes := createNodes(t, h, 10)
@@ -498,7 +501,7 @@ func TestSystemSched_JobRegister_AddNode(t *testing.T) {
 func TestSystemSched_JobRegister_AllocFail(t *testing.T) {
 	ci.Parallel(t)
 
-	h := NewHarness(t)
+	h := tests.NewHarness(t)
 
 	// Create NO nodes
 	// Create a job
@@ -532,7 +535,7 @@ func TestSystemSched_JobRegister_AllocFail(t *testing.T) {
 func TestSystemSched_JobModify(t *testing.T) {
 	ci.Parallel(t)
 
-	h := NewHarness(t)
+	h := tests.NewHarness(t)
 
 	// Create some nodes
 	nodes := createNodes(t, h, 10)
@@ -621,7 +624,7 @@ func TestSystemSched_JobModify(t *testing.T) {
 func TestSystemSched_JobModify_Rolling(t *testing.T) {
 	ci.Parallel(t)
 
-	h := NewHarness(t)
+	h := tests.NewHarness(t)
 
 	// Create some nodes
 	nodes := createNodes(t, h, 10)
@@ -721,7 +724,7 @@ func TestSystemSched_JobModify_Rolling(t *testing.T) {
 func TestSystemSched_JobModify_InPlace(t *testing.T) {
 	ci.Parallel(t)
 
-	h := NewHarness(t)
+	h := tests.NewHarness(t)
 
 	// Create some nodes
 	nodes := createNodes(t, h, 10)
@@ -803,7 +806,7 @@ func TestSystemSched_JobModify_InPlace(t *testing.T) {
 func TestSystemSched_JobModify_RemoveDC(t *testing.T) {
 	ci.Parallel(t)
 
-	h := NewHarness(t)
+	h := tests.NewHarness(t)
 
 	// Create some nodes
 	node1 := mock.Node()
@@ -888,7 +891,7 @@ func TestSystemSched_JobModify_RemoveDC(t *testing.T) {
 func TestSystemSched_JobDeregister_Purged(t *testing.T) {
 	ci.Parallel(t)
 
-	h := NewHarness(t)
+	h := tests.NewHarness(t)
 
 	// Create some nodes
 	nodes := createNodes(t, h, 10)
@@ -949,7 +952,7 @@ func TestSystemSched_JobDeregister_Purged(t *testing.T) {
 func TestSystemSched_JobDeregister_Stopped(t *testing.T) {
 	ci.Parallel(t)
 
-	h := NewHarness(t)
+	h := tests.NewHarness(t)
 
 	// Create some nodes
 	nodes := createNodes(t, h, 10)
@@ -1012,7 +1015,7 @@ func TestSystemSched_JobDeregister_Stopped(t *testing.T) {
 func TestSystemSched_NodeDown(t *testing.T) {
 	ci.Parallel(t)
 
-	h := NewHarness(t)
+	h := tests.NewHarness(t)
 
 	// Register a down node
 	node := mock.Node()
@@ -1073,7 +1076,7 @@ func TestSystemSched_NodeDown(t *testing.T) {
 func TestSystemSched_NodeDrain_Down(t *testing.T) {
 	ci.Parallel(t)
 
-	h := NewHarness(t)
+	h := tests.NewHarness(t)
 
 	// Register a draining node
 	node := mock.DrainNode()
@@ -1127,7 +1130,7 @@ func TestSystemSched_NodeDrain_Down(t *testing.T) {
 func TestSystemSched_NodeDrain(t *testing.T) {
 	ci.Parallel(t)
 
-	h := NewHarness(t)
+	h := tests.NewHarness(t)
 
 	// Register a draining node
 	node := mock.DrainNode()
@@ -1184,7 +1187,7 @@ func TestSystemSched_NodeDrain(t *testing.T) {
 func TestSystemSched_NodeUpdate(t *testing.T) {
 	ci.Parallel(t)
 
-	h := NewHarness(t)
+	h := tests.NewHarness(t)
 
 	// Register a node
 	node := mock.Node()
@@ -1228,8 +1231,8 @@ func TestSystemSched_NodeUpdate(t *testing.T) {
 func TestSystemSched_RetryLimit(t *testing.T) {
 	ci.Parallel(t)
 
-	h := NewHarness(t)
-	h.Planner = &RejectPlan{h}
+	h := tests.NewHarness(t)
+	h.Planner = &tests.RejectPlan{h}
 
 	// Create some nodes
 	_ = createNodes(t, h, 10)
@@ -1274,7 +1277,7 @@ func TestSystemSched_RetryLimit(t *testing.T) {
 func TestSystemSched_Queued_With_Constraints(t *testing.T) {
 	ci.Parallel(t)
 
-	h := NewHarness(t)
+	h := tests.NewHarness(t)
 
 	// Register a node
 	node := mock.Node()
@@ -1315,7 +1318,7 @@ func TestSystemSched_Queued_With_Constraints(t *testing.T) {
 func TestSystemSched_JobConstraint_AddNode(t *testing.T) {
 	ci.Parallel(t)
 
-	h := NewHarness(t)
+	h := tests.NewHarness(t)
 
 	// Create two nodes
 	var node *structs.Node
@@ -1457,7 +1460,7 @@ func TestSystemSched_JobConstraint_AddNode(t *testing.T) {
 
 func TestSystemSched_JobConstraint_AllFiltered(t *testing.T) {
 	ci.Parallel(t)
-	h := NewHarness(t)
+	h := tests.NewHarness(t)
 
 	// Create two nodes, one with a custom class
 	node := mock.Node()
@@ -1504,7 +1507,7 @@ func TestSystemSched_JobConstraint_AllFiltered(t *testing.T) {
 // subsequent runs, and report the outcome appropriately
 func TestSystemSched_JobConstraint_RunMultipleTimes(t *testing.T) {
 	ci.Parallel(t)
-	h := NewHarness(t)
+	h := tests.NewHarness(t)
 
 	// Create two nodes, one with a custom name
 	fooNode := mock.Node()
@@ -1544,14 +1547,14 @@ func TestSystemSched_JobConstraint_RunMultipleTimes(t *testing.T) {
 	testCases := []struct {
 		desc  string
 		job   func() *structs.Job
-		check func(*testing.T, *Harness)
+		check func(*testing.T, *tests.Harness)
 	}{
 		{
 			desc: "Rerunning the job with constraint shouldn't report failed allocations",
 			job: func() *structs.Job {
 				return job
 			},
-			check: func(t *testing.T, h *Harness) {
+			check: func(t *testing.T, h *tests.Harness) {
 				// Ensure a plan is not added, because no action should be taken
 				must.Len(t, 1, h.Plans)
 
@@ -1573,7 +1576,7 @@ func TestSystemSched_JobConstraint_RunMultipleTimes(t *testing.T) {
 				must.NoError(t, h.State.UpsertJob(structs.MsgTypeTestSetup, h.NextIndex(), nil, job))
 				return job
 			},
-			check: func(t *testing.T, h *Harness) {
+			check: func(t *testing.T, h *tests.Harness) {
 				// Ensure another plan is added for the updated alloc
 				must.Len(t, 2, h.Plans)
 
@@ -1600,7 +1603,7 @@ func TestSystemSched_JobConstraint_RunMultipleTimes(t *testing.T) {
 				must.NoError(t, h.State.UpsertJob(structs.MsgTypeTestSetup, h.NextIndex(), nil, job))
 				return job
 			},
-			check: func(t *testing.T, h *Harness) {
+			check: func(t *testing.T, h *tests.Harness) {
 				// Ensure another plan is added for the updated alloc
 				must.Len(t, 3, h.Plans)
 
@@ -1624,7 +1627,7 @@ func TestSystemSched_JobConstraint_RunMultipleTimes(t *testing.T) {
 				must.NoError(t, h.State.UpsertJob(structs.MsgTypeTestSetup, h.NextIndex(), nil, job))
 				return job
 			},
-			check: func(t *testing.T, h *Harness) {
+			check: func(t *testing.T, h *tests.Harness) {
 				// Ensure another Plan for the updated alloc
 				must.Len(t, 4, h.Plans)
 
@@ -1660,7 +1663,7 @@ func TestSystemSched_JobConstraint_RunMultipleTimes(t *testing.T) {
 func TestSystemSched_ExistingAllocNoNodes(t *testing.T) {
 	ci.Parallel(t)
 
-	h := NewHarness(t)
+	h := tests.NewHarness(t)
 
 	var node *structs.Node
 	// Create a node
@@ -1741,7 +1744,7 @@ func TestSystemSched_ExistingAllocNoNodes(t *testing.T) {
 func TestSystemSched_ConstraintErrors(t *testing.T) {
 	ci.Parallel(t)
 
-	h := NewHarness(t)
+	h := tests.NewHarness(t)
 
 	var node *structs.Node
 	// Register some nodes
@@ -1814,7 +1817,7 @@ func TestSystemSched_ConstraintErrors(t *testing.T) {
 func TestSystemSched_ChainedAlloc(t *testing.T) {
 	ci.Parallel(t)
 
-	h := NewHarness(t)
+	h := tests.NewHarness(t)
 
 	// Create some nodes
 	_ = createNodes(t, h, 10)
@@ -1847,7 +1850,7 @@ func TestSystemSched_ChainedAlloc(t *testing.T) {
 	sort.Strings(allocIDs)
 
 	// Create a new harness to invoke the scheduler again
-	h1 := NewHarnessWithState(t, h.State)
+	h1 := tests.NewHarnessWithState(t, h.State)
 	job1 := mock.SystemJob()
 	job1.ID = job.ID
 	job1.TaskGroups[0].Tasks[0].Env = make(map[string]string)
@@ -1904,7 +1907,7 @@ func TestSystemSched_ChainedAlloc(t *testing.T) {
 func TestSystemSched_PlanWithDrainedNode(t *testing.T) {
 	ci.Parallel(t)
 
-	h := NewHarness(t)
+	h := tests.NewHarness(t)
 
 	// Register two nodes with two different classes
 	node := mock.DrainNode()
@@ -1986,7 +1989,7 @@ func TestSystemSched_PlanWithDrainedNode(t *testing.T) {
 func TestSystemSched_QueuedAllocsMultTG(t *testing.T) {
 	ci.Parallel(t)
 
-	h := NewHarness(t)
+	h := tests.NewHarness(t)
 
 	// Register two nodes with two different classes
 	node := mock.Node()
@@ -2044,9 +2047,9 @@ func TestSystemSched_QueuedAllocsMultTG(t *testing.T) {
 func TestSystemSched_Preemption(t *testing.T) {
 	ci.Parallel(t)
 
-	h := NewHarness(t)
+	h := tests.NewHarness(t)
 
-	legacyCpuResources, processorResources := cpuResources(3072)
+	legacyCpuResources, processorResources := tests.CpuResources(3072)
 
 	// Create nodes
 	nodes := make([]*structs.Node, 0)
@@ -3057,7 +3060,7 @@ func TestSystemSched_NodeDisconnected(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			h := NewHarness(t)
+			h := tests.NewHarness(t)
 
 			// Register a node
 			node := mock.Node()
@@ -3202,7 +3205,7 @@ func TestSystemSched_NodeDisconnected(t *testing.T) {
 
 func TestSystemSched_CSITopology(t *testing.T) {
 	ci.Parallel(t)
-	h := NewHarness(t)
+	h := tests.NewHarness(t)
 
 	zones := []string{"zone-0", "zone-1", "zone-2", "zone-3"}
 
@@ -3285,4 +3288,63 @@ func TestSystemSched_CSITopology(t *testing.T) {
 	must.Eq(t, "", h.Evals[0].BlockedEval, must.Sprint("did not expect a blocked eval"))
 	must.Eq(t, structs.EvalStatusComplete, h.Evals[0].Status)
 
+}
+
+func TestEvictAndPlace_LimitLessThanAllocs(t *testing.T) {
+	ci.Parallel(t)
+
+	_, ctx := feasible.MockContext(t)
+	allocs := []reconciler.AllocTuple{
+		{Alloc: &structs.Allocation{ID: uuid.Generate()}},
+		{Alloc: &structs.Allocation{ID: uuid.Generate()}},
+		{Alloc: &structs.Allocation{ID: uuid.Generate()}},
+		{Alloc: &structs.Allocation{ID: uuid.Generate()}},
+	}
+	diff := &reconciler.NodeReconcileResult{}
+
+	limit := 2
+	must.True(t, evictAndPlace(ctx, diff, allocs, "", &limit),
+		must.Sprintf("evictAndReplace() should have returned true"))
+	must.Zero(t, limit,
+		must.Sprint("evictAndReplace() should decrement limit"))
+	must.Len(t, 2, diff.Place,
+		must.Sprintf("evictAndReplace() didn't insert into diffResult properly: %v", diff.Place))
+}
+
+func TestEvictAndPlace_LimitEqualToAllocs(t *testing.T) {
+	ci.Parallel(t)
+
+	_, ctx := feasible.MockContext(t)
+	allocs := []reconciler.AllocTuple{
+		{Alloc: &structs.Allocation{ID: uuid.Generate()}},
+		{Alloc: &structs.Allocation{ID: uuid.Generate()}},
+		{Alloc: &structs.Allocation{ID: uuid.Generate()}},
+		{Alloc: &structs.Allocation{ID: uuid.Generate()}},
+	}
+	diff := &reconciler.NodeReconcileResult{}
+
+	limit := 4
+	must.False(t, evictAndPlace(ctx, diff, allocs, "", &limit),
+		must.Sprint("evictAndReplace() should have returned false"))
+	must.Zero(t, limit, must.Sprint("evictAndReplace() should decrement limit"))
+	must.Len(t, 4, diff.Place,
+		must.Sprintf("evictAndReplace() didn't insert into diffResult properly: %v", diff.Place))
+}
+
+func TestEvictAndPlace_LimitGreaterThanAllocs(t *testing.T) {
+	ci.Parallel(t)
+
+	_, ctx := feasible.MockContext(t)
+	allocs := []reconciler.AllocTuple{
+		{Alloc: &structs.Allocation{ID: uuid.Generate()}},
+		{Alloc: &structs.Allocation{ID: uuid.Generate()}},
+		{Alloc: &structs.Allocation{ID: uuid.Generate()}},
+		{Alloc: &structs.Allocation{ID: uuid.Generate()}},
+	}
+	diff := &reconciler.NodeReconcileResult{}
+
+	limit := 6
+	must.False(t, evictAndPlace(ctx, diff, allocs, "", &limit))
+	must.Eq(t, 2, limit, must.Sprint("evictAndReplace() should decrement limit"))
+	must.Len(t, 4, diff.Place, must.Sprintf("evictAndReplace() didn't insert into diffResult properly: %v", diff.Place))
 }

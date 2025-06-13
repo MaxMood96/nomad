@@ -20,6 +20,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/containerd/errdefs"
 	"github.com/docker/docker/api/types"
 	containerapi "github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/filters"
@@ -27,7 +28,6 @@ import (
 	networkapi "github.com/docker/docker/api/types/network"
 	"github.com/docker/docker/api/types/registry"
 	"github.com/docker/docker/client"
-	"github.com/docker/docker/errdefs"
 	"github.com/docker/docker/pkg/stdcopy"
 	"github.com/hashicorp/consul-template/signals"
 	hclog "github.com/hashicorp/go-hclog"
@@ -1046,6 +1046,7 @@ func (d *Driver) createContainerConfig(task *drivers.TaskConfig, driverConfig *T
 	cpuShares := d.cpuResources(task.Resources.LinuxResources.CPUShares)
 
 	hostConfig := &containerapi.HostConfig{
+		CgroupnsMode: containerapi.CgroupnsMode(driverConfig.CgroupnsMode),
 		// do not set cgroup parent anymore
 
 		OomScoreAdj: driverConfig.OOMScoreAdj, // ignored on platforms other than linux
@@ -1665,7 +1666,7 @@ func (d *Driver) DestroyTask(taskID string, force bool) error {
 
 	c, err := dockerClient.ContainerInspect(d.ctx, h.containerID)
 	if err != nil {
-		if _, ok := err.(errdefs.ErrNotFound); ok {
+		if errdefs.IsNotFound(err) {
 			h.logger.Info("container was removed out of band, will proceed with DestroyTask",
 				"error", err)
 		} else {

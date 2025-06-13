@@ -46,7 +46,7 @@ PROTO_COMPARE_TAG ?= v1.0.3$(if $(findstring ent,$(GO_TAGS)),+ent,)
 # or backport version, without the leading "v". main should have the latest
 # published release here, and release branches should point to the latest
 # published release in their X.Y release line.
-LAST_RELEASE ?= 1.10.1
+LAST_RELEASE ?= 1.10.2
 
 default: help
 
@@ -296,7 +296,7 @@ test-nomad: # dev ## Run Nomad unit tests
 	@echo "==> with packages $(GOTEST_PKGS)"
 	gotestsum --format=testname --rerun-fails=3 --packages="$(GOTEST_PKGS)" -- \
 		-cover \
-		-timeout=20m \
+		-timeout=25m \
 		-count=1 \
 		-tags "$(GO_TAGS)" \
 		$(GOTEST_PKGS)
@@ -306,7 +306,7 @@ test-nomad-module: dev ## Run Nomad unit tests on sub-module
 	@echo "==> Running Nomad unit tests on sub-module $(GOTEST_MOD)"
 	cd $(GOTEST_MOD); gotestsum --format=testname --rerun-fails=3 --packages=./... -- \
 		-cover \
-		-timeout=20m \
+		-timeout=25m \
 		-count=1 \
 		-race \
 		-tags "$(GO_TAGS)" \
@@ -441,7 +441,7 @@ test: ## Use this target as a smoke test
 	@echo "==> with packages: $(GOTEST_PKGS)"
 	gotestsum --format=testname --packages="$(GOTEST_PKGS)" -- \
 		-cover \
-		-timeout=20m \
+		-timeout=25m \
 		-count=1 \
 		-tags "$(GO_TAGS)" \
 		$(GOTEST_PKGS)

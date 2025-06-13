@@ -11,6 +11,9 @@ import (
 	"github.com/hashicorp/go-memdb"
 	"github.com/hashicorp/nomad/helper/uuid"
 	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/hashicorp/nomad/scheduler/feasible"
+	"github.com/hashicorp/nomad/scheduler/reconciler"
+	sstructs "github.com/hashicorp/nomad/scheduler/structs"
 )
 
 const (
@@ -31,16 +34,16 @@ const (
 type SystemScheduler struct {
 	logger   log.Logger
 	eventsCh chan<- interface{}
-	state    State
-	planner  Planner
+	state    sstructs.State
+	planner  sstructs.Planner
 	sysbatch bool
 
 	eval       *structs.Evaluation
 	job        *structs.Job
 	plan       *structs.Plan
 	planResult *structs.PlanResult
-	ctx        *EvalContext
-	stack      *SystemStack
+	ctx        *feasible.EvalContext
+	stack      *feasible.SystemStack
 
 	nodes         []*structs.Node
 	notReadyNodes map[string]struct{}
@@ -55,7 +58,7 @@ type SystemScheduler struct {
 
 // NewSystemScheduler is a factory function to instantiate a new system
 // scheduler.
-func NewSystemScheduler(logger log.Logger, eventsCh chan<- interface{}, state State, planner Planner) Scheduler {
+func NewSystemScheduler(logger log.Logger, eventsCh chan<- interface{}, state sstructs.State, planner sstructs.Planner) sstructs.Scheduler {
 	return &SystemScheduler{
 		logger:   logger.Named("system_sched"),
 		eventsCh: eventsCh,
@@ -65,7 +68,7 @@ func NewSystemScheduler(logger log.Logger, eventsCh chan<- interface{}, state St
 	}
 }
 
-func NewSysBatchScheduler(logger log.Logger, eventsCh chan<- interface{}, state State, planner Planner) Scheduler {
+func NewSysBatchScheduler(logger log.Logger, eventsCh chan<- interface{}, state sstructs.State, planner sstructs.Planner) sstructs.Scheduler {
 	return &SystemScheduler{
 		logger:   logger.Named("sysbatch_sched"),
 		eventsCh: eventsCh,
@@ -151,10 +154,10 @@ func (s *SystemScheduler) process() (bool, error) {
 	s.failedTGAllocs = nil
 
 	// Create an evaluation context
-	s.ctx = NewEvalContext(s.eventsCh, s.state, s.plan, s.logger)
+	s.ctx = feasible.NewEvalContext(s.eventsCh, s.state, s.plan, s.logger)
 
 	// Construct the placement stack
-	s.stack = NewSystemStack(s.sysbatch, s.ctx)
+	s.stack = feasible.NewSystemStack(s.sysbatch, s.ctx)
 	if !s.job.Stopped() {
 		s.setJob(s.job)
 	}
@@ -255,27 +258,27 @@ func (s *SystemScheduler) computeJobAllocs() error {
 	live, term := structs.SplitTerminalAllocs(allocs)
 
 	// Diff the required and existing allocations
-	diff := diffSystemAllocs(s.job, s.nodes, s.notReadyNodes, tainted, live, term,
+	r := reconciler.Node(s.job, s.nodes, s.notReadyNodes, tainted, live, term,
 		s.planner.ServersMeetMinimumVersion(minVersionMaxClientDisconnect, true))
-	s.logger.Debug("reconciled current state with desired state", "results", log.Fmt("%#v", diff))
+	s.logger.Debug("reconciled current state with desired state", "results", log.Fmt("%#v", r))
 
 	// Add all the allocs to stop
-	for _, e := range diff.stop {
-		s.plan.AppendStoppedAlloc(e.Alloc, allocNotNeeded, "", "")
+	for _, e := range r.Stop {
+		s.plan.AppendStoppedAlloc(e.Alloc, sstructs.StatusAllocNotNeeded, "", "")
 	}
 
 	// Add all the allocs to migrate
-	for _, e := range diff.migrate {
-		s.plan.AppendStoppedAlloc(e.Alloc, allocNodeTainted, "", "")
+	for _, e := range r.Migrate {
+		s.plan.AppendStoppedAlloc(e.Alloc, sstructs.StatusAllocNodeTainted, "", "")
 	}
 
 	// Lost allocations should be transitioned to desired status stop and client
 	// status lost.
-	for _, e := range diff.lost {
-		s.plan.AppendStoppedAlloc(e.Alloc, allocLost, structs.AllocClientStatusLost, "")
+	for _, e := range r.Lost {
+		s.plan.AppendStoppedAlloc(e.Alloc, sstructs.StatusAllocLost, structs.AllocClientStatusLost, "")
 	}
 
-	for _, e := range diff.disconnecting {
+	for _, e := range r.Disconnecting {
 		s.plan.AppendUnknownAlloc(e.Alloc)
 	}
 
@@ -283,11 +286,11 @@ func (s *SystemScheduler) computeJobAllocs() error {
 	// Attempt to do the upgrades in place.
 	// Reconnecting allocations need to be updated to persists alloc state
 	// changes.
-	updates := make([]allocTuple, 0, len(diff.update)+len(diff.reconnecting))
-	updates = append(updates, diff.update...)
-	updates = append(updates, diff.reconnecting...)
+	updates := make([]reconciler.AllocTuple, 0, len(r.Update)+len(r.Reconnecting))
+	updates = append(updates, r.Update...)
+	updates = append(updates, r.Reconnecting...)
 	destructiveUpdates, inplaceUpdates := inplaceUpdate(s.ctx, s.eval, s.job, s.stack, updates)
-	diff.update = destructiveUpdates
+	r.Update = destructiveUpdates
 
 	for _, inplaceUpdate := range inplaceUpdates {
 		allocExistsForTaskGroup[inplaceUpdate.TaskGroup.Name] = true
@@ -295,21 +298,21 @@ func (s *SystemScheduler) computeJobAllocs() error {
 
 	if s.eval.AnnotatePlan {
 		s.plan.Annotations = &structs.PlanAnnotations{
-			DesiredTGUpdates: desiredUpdates(diff, inplaceUpdates, destructiveUpdates),
+			DesiredTGUpdates: desiredUpdates(r, inplaceUpdates, destructiveUpdates),
 		}
 	}
 
 	// Check if a rolling upgrade strategy is being used
-	limit := len(diff.update)
+	limit := len(r.Update)
 	if !s.job.Stopped() && s.job.Update.Rolling() {
 		limit = s.job.Update.MaxParallel
 	}
 
 	// Treat non in-place updates as an eviction and new placement.
-	s.limitReached = evictAndPlace(s.ctx, diff, diff.update, allocUpdating, &limit)
+	s.limitReached = evictAndPlace(s.ctx, r, r.Update, sstructs.StatusAllocUpdating, &limit)
 
 	// Nothing remaining to do if placement is not required
-	if len(diff.place) == 0 {
+	if len(r.Place) == 0 {
 		if !s.job.Stopped() {
 			for _, tg := range s.job.TaskGroups {
 				s.queuedAllocs[tg.Name] = 0
@@ -319,16 +322,16 @@ func (s *SystemScheduler) computeJobAllocs() error {
 	}
 
 	// Record the number of allocations that needs to be placed per Task Group
-	for _, allocTuple := range diff.place {
+	for _, allocTuple := range r.Place {
 		s.queuedAllocs[allocTuple.TaskGroup.Name] += 1
 	}
 
-	for _, ignoredAlloc := range diff.ignore {
+	for _, ignoredAlloc := range r.Ignore {
 		allocExistsForTaskGroup[ignoredAlloc.TaskGroup.Name] = true
 	}
 
 	// Compute the placements
-	return s.computePlacements(diff.place, allocExistsForTaskGroup)
+	return s.computePlacements(r.Place, allocExistsForTaskGroup)
 }
 
 func mergeNodeFiltered(acc, curr *structs.AllocMetric) *structs.AllocMetric {
@@ -356,7 +359,7 @@ func mergeNodeFiltered(acc, curr *structs.AllocMetric) *structs.AllocMetric {
 }
 
 // computePlacements computes placements for allocations
-func (s *SystemScheduler) computePlacements(place []allocTuple, existingByTaskGroup map[string]bool) error {
+func (s *SystemScheduler) computePlacements(place []reconciler.AllocTuple, existingByTaskGroup map[string]bool) error {
 	nodeByID := make(map[string]*structs.Node, len(s.nodes))
 	for _, node := range s.nodes {
 		nodeByID[node.ID] = node
@@ -380,7 +383,7 @@ func (s *SystemScheduler) computePlacements(place []allocTuple, existingByTaskGr
 		s.stack.SetNodes(nodes)
 
 		// Attempt to match the task group
-		option := s.stack.Select(missing.TaskGroup, &SelectOptions{AllocName: missing.Name})
+		option := s.stack.Select(missing.TaskGroup, &feasible.SelectOptions{AllocName: missing.Name})
 
 		if option == nil {
 			// If the task can't be placed on this node, update reporting data
@@ -389,7 +392,7 @@ func (s *SystemScheduler) computePlacements(place []allocTuple, existingByTaskGr
 			// If this node was filtered because of constraint
 			// mismatches and we couldn't create an allocation then
 			// decrement queuedAllocs for that task group.
-			if s.ctx.metrics.NodesFiltered > 0 {
+			if s.ctx.Metrics().NodesFiltered > 0 {
 				queued := s.queuedAllocs[tgName] - 1
 				s.queuedAllocs[tgName] = queued
 
@@ -536,7 +539,7 @@ func (s *SystemScheduler) addBlocked(node *structs.Node) error {
 	}
 
 	blocked := s.eval.CreateBlockedEval(classEligibility, escaped, e.QuotaLimitReached(), s.failedTGAllocs)
-	blocked.StatusDescription = blockedEvalFailedPlacements
+	blocked.StatusDescription = sstructs.DescBlockedEvalFailedPlacements
 	blocked.NodeID = node.ID
 
 	return s.planner.CreateEval(blocked)
@@ -564,5 +567,23 @@ func (s *SystemScheduler) canHandle(trigger string) bool {
 			return false
 		}
 	}
+	return true
+}
+
+// evictAndPlace is used to mark allocations for evicts and add them to the
+// placement queue. evictAndPlace modifies both the diffResult and the
+// limit. It returns true if the limit has been reached.
+func evictAndPlace(ctx feasible.Context, diff *reconciler.NodeReconcileResult, allocs []reconciler.AllocTuple, desc string, limit *int) bool {
+	n := len(allocs)
+	for i := 0; i < n && i < *limit; i++ {
+		a := allocs[i]
+		ctx.Plan().AppendStoppedAlloc(a.Alloc, desc, "", "")
+		diff.Place = append(diff.Place, a)
+	}
+	if n <= *limit {
+		*limit -= n
+		return false
+	}
+	*limit = 0
 	return true
 }

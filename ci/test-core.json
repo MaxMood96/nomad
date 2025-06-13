@@ -46,6 +46,8 @@
     "nomad/volumewatcher/...",
     "plugins/...",
     "scheduler/...",
+    "scheduler/feasible/...",
+    "scheduler/reconciler/...",
     "testutil/..."
   ]
 }
