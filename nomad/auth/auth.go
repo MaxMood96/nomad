@@ -273,7 +273,7 @@ func (s *Authenticator) AuthenticateServerOnly(ctx RPCContext, args structs.Requ
 	// verify them here and only return the server ACL for actual servers even
 	// if mTLS was disabled. Without mTLS, any request can spoof server RPCs.
 	// This is known and documented in the Security Model:
-	// https://developer.hashicorp.com/nomad/docs/concepts/security#requirements
+	// https://developer.hashicorp.com/nomad/docs/secure/acl
 	if err := verifyTLS(s.verifyTLS.Load(), ctx, s.validServerCertNames, identity); err != nil {
 		return nil, err
 	}
@@ -335,7 +335,7 @@ func (s *Authenticator) AuthenticateNodeIdentityGenerator(ctx RPCContext, args s
 		if err != nil {
 			return err
 		}
-		if !claims.IsNode() {
+		if !claims.IsNode() && !claims.IsNodeIntroduction() {
 			return structs.ErrPermissionDenied
 		}
 		identity.Claims = claims
@@ -538,6 +538,13 @@ func (s *Authenticator) VerifyClaim(token string) (*structs.IdentityClaims, erro
 		if err := s.verifyNodeIdentityClaim(claims); err != nil {
 			return nil, err
 		}
+		return claims, nil
+	}
+
+	// Node introduction claims are a special case where we don't verify them
+	// against the state store, since they are used to introduce a node that
+	// does not yet exist.
+	if claims.IsNodeIntroduction() {
 		return claims, nil
 	}
 
