@@ -456,7 +456,6 @@ github.com/hashicorp/go-gatedio v0.5.0/go.mod h1:Lr3t8L6IyxD3DAeaUxGcgl2JnRUpWMC
 github.com/hashicorp/go-getter v1.8.5 h1:DMPV5CSw5JrNg/IK7kDZt3+l2REKXOi3oAw7uYLh2NM=
 github.com/hashicorp/go-getter v1.8.5/go.mod h1:WIffejwAyDSJhoVptc3UEshEMkR9O63rw34V7k43O3Q=
 github.com/hashicorp/go-hclog v0.9.1/go.mod h1:5CU+agLiy3J7N7QjHK5d05KxGsuXiQLrjA0H7acj2lQ=
-github.com/hashicorp/go-hclog v0.14.1/go.mod h1:whpDNt7SSdeAju8AWKIWsul05p54N/39EeqMAyrmvFQ=
 github.com/hashicorp/go-hclog v0.16.2/go.mod h1:whpDNt7SSdeAju8AWKIWsul05p54N/39EeqMAyrmvFQ=
 github.com/hashicorp/go-hclog v1.6.3 h1:Qr2kF+eVWjTiYmU7Y31tYlP1h0q/X3Nl3tPGdaB11/k=
 github.com/hashicorp/go-hclog v1.6.3/go.mod h1:W4Qnvbt70Wk/zYJryRzDRU/4r0kIg0PVHBcfoyhpF5M=
@@ -529,8 +528,8 @@ github.com/hashicorp/golang-lru/v2 v2.0.7 h1:a+bsQ5rvGLjzHuww6tVxozPZFVghXaHOwFs
 github.com/hashicorp/golang-lru/v2 v2.0.7/go.mod h1:QeFd9opnmA6QUJc5vARoKUSoFhyfM2/ZepoAG6RGpeM=
 github.com/hashicorp/hcl v1.0.1-nomad-1 h1:0hOV+/m12cRBAfvHpVOgGdM68XU7uTxGafEuUB2UES8=
 github.com/hashicorp/hcl v1.0.1-nomad-1/go.mod h1:gwlu9+/P9MmKtYrMsHeFRZPXj2CTPm11TDnMeaRHS7g=
-github.com/hashicorp/hcl/v2 v2.20.2-nomad-1 h1:FVr/cgKVheQ9KGEq4sFAiDqls5Yp2Y5+K/WL1Wm5l/s=
-github.com/hashicorp/hcl/v2 v2.20.2-nomad-1/go.mod h1:62ZYHrXgPoX8xBnzl8QzbWq4dyDsDtfCRgIq1rbJEvA=
+github.com/hashicorp/hcl/v2 v2.24.0 h1:2QJdZ454DSsYGoaE6QheQZjtKZSUs9Nh2izTWiwQxvE=
+github.com/hashicorp/hcl/v2 v2.24.0/go.mod h1:oGoO1FIQYfn/AgyOhlg9qLC6/nOJPX3qGbkZpYAcqfM=
 github.com/hashicorp/hil v0.0.0-20210521165536-27a72121fd40 h1:ExwaL+hUy1ys2AWDbsbh/lxQS2EVCYxuj0LoyLTdB3Y=
 github.com/hashicorp/hil v0.0.0-20210521165536-27a72121fd40/go.mod h1:n2TSygSNwsLJ76m8qFXTSc7beTb+auJxYdqrnoqwZWE=
 github.com/hashicorp/mdns v1.0.6 h1:SV8UcjnQ/+C7KeJ/QeVD/mdN2EmzYfcGfufcuzxfCLQ=
@@ -540,12 +539,10 @@ github.com/hashicorp/memberlist v0.5.4/go.mod h1:OgN6xiIo6RlHUWk+ALjP9e32xWCoQrs
 github.com/hashicorp/net-rpc-msgpackrpc/v2 v2.0.1 h1:Y1sd8ZCCUUlUetCk+3MCpOwdWd+WicHdk2zk2yUM0qw=
 github.com/hashicorp/net-rpc-msgpackrpc/v2 v2.0.1/go.mod h1:wASEfI5dofjm9S9Jp3JM4pfoBZy8Z07JUE2wHNi0zuc=
 github.com/hashicorp/raft v1.1.0/go.mod h1:4Ak7FSPnuvmb0GV6vgIAJ4vYT4bek9bb6Q+7HVbyzqM=
-github.com/hashicorp/raft v1.2.0/go.mod h1:vPAJM8Asw6u8LxC3eJCUZmRP/E4QmUGE1R7g7k8sG/8=
 github.com/hashicorp/raft v1.7.3 h1:DxpEqZJysHN0wK+fviai5mFcSYsCkNpFUl1xpAW8Rbo=
 github.com/hashicorp/raft v1.7.3/go.mod h1:DfvCGFxpAUPE0L4Uc8JLlTPtc3GzSbdH0MTJCLgnmJQ=
-github.com/hashicorp/raft-autopilot v0.1.6 h1:C1q3RNF2FfXNZfHWbvVAu0QixaQK8K5pX4O5lh+9z4I=
-github.com/hashicorp/raft-autopilot v0.1.6/go.mod h1:Af4jZBwaNOI+tXfIqIdbcAnh/UyyqIMj/pOISIfhArw=
-github.com/hashicorp/raft-boltdb v0.0.0-20171010151810-6e5ba93211ea/go.mod h1:pNv7Wc3ycL6F5oOWn+tPGo2gWD4a5X+yp/ntwdKLjRk=
+github.com/hashicorp/raft-autopilot v0.3.0 h1:KhXCecBFqAMpC0i77qVfuYd937cl2dNatSA/sSNs+2s=
+github.com/hashicorp/raft-autopilot v0.3.0/go.mod h1:pUBzcE8bXIm/NcFZ/xKz7O3aNOU/4T4Zkv11YqdxpUc=
 github.com/hashicorp/raft-boltdb v0.0.0-20250113192317-e8660f88bcc9 h1:DtRY4x+oreq0BTrrfF66XeCg6DPJuR2AL4Ejeipau/A=
 github.com/hashicorp/raft-boltdb v0.0.0-20250113192317-e8660f88bcc9/go.mod h1:FLQZr+lEOtW/5JZQCqRihQOrmyqWRqpJ+pP1gjb8XTE=
 github.com/hashicorp/raft-boltdb/v2 v2.3.1 h1:ackhdCNPKblmOhjEU9+4lHSJYFkJd6Jqyvj6eW9pwkc=
@@ -554,8 +551,8 @@ github.com/hashicorp/raft-wal v0.4.2 h1:DV1jgqEumNfdNpOaZ9mL1Gu7Mz59epFtiE6CoqnH
 github.com/hashicorp/raft-wal v0.4.2/go.mod h1:S92ainH+6fRuWk6BtZKJ8EgcGgNTKx48Hk5dhOOY1DM=
 github.com/hashicorp/serf v0.10.2 h1:m5IORhuNSjaxeljg5DeQVDlQyVkhRIjJDimbkCa8aAc=
 github.com/hashicorp/serf v0.10.2/go.mod h1:T1CmSGfSeGfnfNy/w0odXQUR1rfECGd2Qdsp84DjOiY=
-github.com/hashicorp/vault/api v1.22.0 h1:+HYFquE35/B74fHoIeXlZIP2YADVboaPjaSicHEZiH0=
-github.com/hashicorp/vault/api v1.22.0/go.mod h1:IUZA2cDvr4Ok3+NtK2Oq/r+lJeXkeCrHRmqdyWfpmGM=
+github.com/hashicorp/vault/api v1.23.0 h1:gXgluBsSECfRWTSW9niY2jwg2e9mMJc4WoHNv4g3h6A=
+github.com/hashicorp/vault/api v1.23.0/go.mod h1:zransKiB9ftp+kgY8ydjnvCU7Wk8i9L0DYWpXeMj9ko=
 github.com/hashicorp/vault/api/auth/kubernetes v0.10.0 h1:5rqWmUFxnu3S7XYq9dafURwBgabYDFzo2Wv+AMopPHs=
 github.com/hashicorp/vault/api/auth/kubernetes v0.10.0/go.mod h1:cZZmhF6xboMDmDbMY52oj2DKW6gS0cQ9g0pJ5XIXQ5U=
 github.com/hashicorp/vic v1.5.1-0.20190403131502-bbfe86ec9443 h1:O/pT5C1Q3mVXMyuqg7yuAWUg/jMZR1/0QTzTRdNR6Uw=
@@ -1008,7 +1005,6 @@ golang.org/x/sys v0.0.0-20190222072716-a9d3bda3a223/go.mod h1:STP8DvDyc/dI5b8T5h
 golang.org/x/sys v0.0.0-20190412213103-97732733099d/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20190422165155-953cdadca894/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20190507160741-ecd444e8653b/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
-golang.org/x/sys v0.0.0-20190523142557-0e01d883c5c5/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20190801041406-cbf593c0f2f3/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20190916202348-b4ddaad3f8a3/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20191008105621-543471e840be/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
