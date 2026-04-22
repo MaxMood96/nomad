@@ -46,8 +46,8 @@ require (
 	github.com/hashicorp/cap v0.12.0
 	github.com/hashicorp/cli v1.1.7
 	github.com/hashicorp/consul-template v0.42.0
-	github.com/hashicorp/consul/api v1.34.0
-	github.com/hashicorp/consul/sdk v0.18.0
+	github.com/hashicorp/consul/api v1.34.2
+	github.com/hashicorp/consul/sdk v0.18.1
 	github.com/hashicorp/cronexpr v1.1.3
 	github.com/hashicorp/go-bexpr v0.1.16
 	github.com/hashicorp/go-checkpoint v0.5.0
@@ -78,13 +78,13 @@ require (
 	github.com/hashicorp/go-version v1.9.0
 	github.com/hashicorp/golang-lru/v2 v2.0.7
 	github.com/hashicorp/hcl v1.0.1-vault-7
-	github.com/hashicorp/hcl/v2 v2.20.2-nomad-1
+	github.com/hashicorp/hcl/v2 v2.24.0
 	github.com/hashicorp/hil v0.0.0-20210521165536-27a72121fd40
 	github.com/hashicorp/memberlist v0.5.4
 	github.com/hashicorp/net-rpc-msgpackrpc/v2 v2.0.1
 	github.com/hashicorp/nomad/api v0.0.0-20260410071528-9e6d492b59a8
 	github.com/hashicorp/raft v1.7.3
-	github.com/hashicorp/raft-autopilot v0.1.6
+	github.com/hashicorp/raft-autopilot v0.3.0
 	github.com/hashicorp/raft-boltdb/v2 v2.3.1
 	github.com/hashicorp/raft-wal v0.4.2
 	github.com/hashicorp/serf v0.10.2
